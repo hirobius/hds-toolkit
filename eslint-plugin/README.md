@@ -1,0 +1,230 @@
+# @hirobius/eslint-plugin-hds
+
+Consumer-facing ESLint plugin for apps built on `@hirobius/design-system`.
+Flags raw hex/px layout and color values that bypass HDS tokens, and raw HTML
+form controls that an HDS component replaces — the same discipline
+`scripts/check-hardcoded-colors.mjs`, `scripts/check-hardcoded-spacing.mjs`,
+and `scripts/check-layout-discipline.mjs` enforce inside this repo, shipped for
+downstream consumer apps (this repo's own source is governed by those scripts
+directly, not by this plugin).
+
+Flat config only (ESLint 9+).
+
+## Install
+
+It ships inside `@hirobius/design-system` as the `./eslint-plugin` subpath, so
+an app with the design system installed needs only `eslint`:
+
+```js
+import hds from '@hirobius/design-system/eslint-plugin';
+```
+
+Without the design system (a lint-only repo), install it from git and import
+it as `@hirobius/eslint-plugin-hds`:
+
+```bash
+pnpm add -D "@hirobius/eslint-plugin-hds@github:hirobius/hds#path:/scripts/eslint-plugin-hds"
+# peer dependency:
+pnpm add -D eslint
+```
+
+## Use
+
+```js
+// eslint.config.mjs
+import hds from '@hirobius/design-system/eslint-plugin';
+
+export default [
+  {
+    files: ['**/*.{ts,tsx,jsx}'],
+    languageOptions: {
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+  },
+  ...hds.configs.recommended,
+];
+```
+
+Or pick rules individually:
+
+```js
+import hds from '@hirobius/design-system/eslint-plugin';
+
+export default [
+  {
+    files: ['**/*.{ts,tsx,jsx}'],
+    plugins: { hds },
+    rules: {
+      'hds/max-two-meta-items': 'error',
+      'hds/no-raw-controls': 'error',
+      'hds/no-raw-hex': 'error',
+      'hds/no-raw-px-spacing': 'error',
+      'hds/sx-token-first': 'error',
+      'hds/prefer-hds-layout-primitive': 'warn',
+    },
+  },
+];
+```
+
+## Rules
+
+| Rule                                                                 | Default | What it catches                                                                                        |
+| -------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------ |
+| [`hds/max-two-meta-items`](#hdsmax-two-meta-items)                   | error   | Bullet-separated lines (`A · B · C`) with three or more items; use `MetaLine`, one row per extra item. |
+| [`hds/no-raw-controls`](#hdsno-raw-controls)                         | error   | Raw `<button>`, `<input>`, `<select>`, `<textarea>`, `<form>` where an HDS component exists.           |
+| [`hds/no-raw-hex`](#hdsno-raw-hex)                                   | error   | Raw hex colors (`#fff`, `#ff00aa`) in `style={{…}}` or `className`.                                    |
+| [`hds/no-raw-px-spacing`](#hdsno-raw-px-spacing)                     | error   | Raw `'Npx'` strings or bare numbers on `margin`/`padding`/`gap` family props in `style={{…}}`.         |
+| [`hds/no-status-clutter`](#hdsno-status-clutter)                     | error   | `<Badge dot>` and a coloured left-border accent bar (`border-l-2`..`8` plus a tone colour).            |
+| [`hds/prefer-hds-layout-primitive`](#hdsprefer-hds-layout-primitive) | warn    | Ad-hoc `display: 'flex' \| 'grid'` in `style={{…}}` where a named primitive (Stack/Grid) likely fits.  |
+| [`hds/sx-token-first`](#hdssx-token-first)                           | error   | Raw hex/px string values inside a `Box` `sx={{…}}` prop — `sx` must resolve through token keys.        |
+
+### `hds/max-two-meta-items`
+
+```tsx
+// ❌ error — three items on one bullet line wrap mid-line when translated
+<p>Acme Cloud · Remote · Applied 3 days ago</p>
+
+// ✅ ok
+<MetaLine items={['Acme Cloud', 'Remote']} />
+<MetaLine items={['Applied 3 days ago']} />
+```
+
+### `hds/no-status-clutter`
+
+Status is implied by content (hds#759). Flags the `dot` prop on `<Badge>` and a coloured left-border accent bar in a `className`. A neutral `border-border` rule is fine.
+
+### `hds/no-raw-controls`
+
+```tsx
+// ❌ error — use Button / Input / Select / Textarea / Form
+<form onSubmit={save}><textarea /><button>Save</button></form>
+
+// ✅ ok — Form and FormActions import from @hirobius/design-system/patterns
+<Form onSubmit={save}>
+  <Textarea label="Notes" />
+  <FormActions primary={<Button type="submit">Save</Button>} />
+</Form>
+```
+
+Only lowercase intrinsic JSX names are checked; `<Button>` and
+`<AlertDialog.Action>` are components.
+
+### `hds/no-raw-hex`
+
+```tsx
+// ❌ error
+<div style={{ color: '#fff' }} />
+<div className="bg-[#ff0000]" />
+
+// ✅ ok
+<div style={{ color: 'var(--semantic-color-content-primary)' }} />
+<Box sx={{ color: 'content.primary' }} />
+```
+
+### `hds/no-raw-px-spacing`
+
+The fix the message offers is the t-shirt scale token,
+`hds.semantic.space.scale.*` (`var(--semantic-space-scale-*)`). When `Box`'s
+`sx` has a shorthand for the same CSS property, it also offers that shorthand
+with a step: `margin`/`padding` and their `Top`/`Right`/`Bottom`/`Left` forms
+map to `m`/`p` and `mt`, `mb`, `pt`, ..., and `gap`, `rowGap`, `columnGap` keep
+their names. Write `sx={{ mb: 'md' }}`: `sx` resolves step names on its
+shorthand keys only, so a long-hand key with a step passes it through as
+invalid CSS and renders no spacing. Logical props (`paddingInline`,
+`marginBlockStart`, ...) have no `sx` shorthand (`px`/`py`/`mx`/`my` set
+physical sides), so for them the message offers the token only.
+
+The shorthand-with-step advice needs a `@hirobius/design-system` release newer
+than 0.19.1. On 0.19.1 and earlier `sx` passes the step through as invalid CSS
+and renders no spacing ([MIGRATIONS.md](../../MIGRATIONS.md), "Upgrade first"),
+so use the token there.
+
+```tsx
+// ❌ error
+<div style={{ marginBottom: '12px' }} />
+<div style={{ gap: 24 }} />
+<div style={{ paddingInline: '8px' }} />
+
+// ✅ ok — a scale token, another token reference, or zero (a reset has no scale to violate)
+<div style={{ marginBottom: hds.semantic.space.scale.sm }} />
+<div style={{ paddingInline: 'var(--semantic-space-scale-xs)' }} />
+<div style={{ marginBottom: hds.space.px16 }} />
+<div style={{ margin: 0 }} />
+
+// ✅ ok — the sx shorthand with a t-shirt step
+<Box sx={{ mb: 'sm', gap: 'md' }} />
+```
+
+### `hds/prefer-hds-layout-primitive`
+
+```tsx
+// ⚠️ warn — consider a named primitive instead
+<div style={{ display: 'flex', gap: 8 }} />
+
+// ✅ preferred
+<Stack gap="normal"><Child /></Stack>
+```
+
+Warning, not error — ad-hoc flex is sometimes the right call for a genuinely
+one-off nested alignment; this nudges rather than blocks.
+
+### `hds/sx-token-first`
+
+`Box`'s `sx` prop (`src/app/components/box.tsx`) is the sanctioned escape
+hatch specifically because it forces spacing/color through HDS tokens.
+The spacing props (`p`, `m`, `gap` and their `t`/`r`/`b`/`l`/`x`/`y`,
+`rowGap`, `columnGap` forms) take the t-shirt scale by name:
+`'xs' | 'sm' | 'md' | 'lg' | 'xl'` (hds#206). That is 8/16/24/32/48px at
+comfortable density; `data-density="compact"` tightens each step. This rule
+flags only values that prove the author reached past the token system. A px
+string on a spacing prop is pointed at a step; on any other key
+(`width`, `top`, `padding`), where a step name is not valid CSS, it is pointed
+at a token: an `hds.space.*` value or a `var(--...)`. The rule does **not**
+flag bare numbers, which still resolve off the 4px scale, but a number reads
+as pixels when it is not (`p: 4` is 16px), so use the names.
+
+```tsx
+// ❌ error — use a color token key ('content.primary', 'accent')
+<Box sx={{ color: '#fff' }} />
+
+// ❌ error — use a t-shirt step
+<Box sx={{ m: '16px' }} />
+
+// ❌ error — use a token (hds.space.*, var(--...))
+<Box sx={{ width: '200px' }} />
+
+// ✅ ok — spacing by t-shirt step; other strings are token keys/vars
+<Box sx={{ m: 'sm', gap: 'md' }} />
+<Box sx={{ color: 'content.primary', top: 'var(--primitive-space-2)' }} />
+```
+
+Responsive objects (`{ xs, sm, md, lg, xl }`) and `&`-selector nesting are
+walked recursively.
+
+## Testing
+
+```bash
+pnpm exec vitest run scripts/eslint-plugin-hds
+```
+
+`pnpm test` runs these suites. They use ESLint's built-in `RuleTester`, wired to
+vitest's `describe`/`it` in `__tests__/test-helpers.mjs`;
+`scripts/__tests__/eslint-plugin-subpath.test.mjs` lints through the package's
+`./eslint-plugin` export with the `recommended` config.
+
+## Design notes
+
+- AST-based (`JSXAttribute` / `ObjectExpression` traversal), not
+  regex-over-source-text like this repo's internal `scripts/check-*.mjs`
+  guardrails — a consumer's own ESLint config already supplies a JSX-aware
+  parser, so exact node types are free here.
+- Only flags values it can _prove_ are raw: string literals, zero-expression
+  template literals, and numeric literals (incl. unary-minus). Computed
+  values (identifiers, member expressions, interpolated templates,
+  ternaries) are never flagged — false negatives are preferred over false
+  positives in a rule that runs across arbitrary consumer code.
+- Suppress a specific finding with a standard ESLint disable comment
+  (`// eslint-disable-next-line hds/no-raw-hex`) — no custom exemption
+  syntax; this plugin runs outside this repo's own guardrail-exemption
+  conventions (`// spacing-ok:`, `// layout-ok:`, etc.), which are internal
+  to this repo's own `scripts/check-*.mjs` gates.
