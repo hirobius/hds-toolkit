@@ -1,8 +1,10 @@
 // @vitest-environment node
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
+const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 const bin = fileURLToPath(new URL('../mcp/hds-mcp.mjs', import.meta.url));
 
 /** Sends newline-delimited JSON-RPC to the stdio server and returns the parsed responses. */
@@ -19,7 +21,7 @@ describe('hds-mcp (toolkit entry point, data from the installed design system)',
       { jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 't', version: '0' } } },
       { jsonrpc: '2.0', id: 2, method: 'tools/list' },
     ]);
-    expect(init.result.serverInfo.version).toBe('0.1.0');
+    expect(init.result.serverInfo.version).toBe(pkg.version);
     expect(list.result.tools.length).toBeGreaterThan(0);
   });
 });
