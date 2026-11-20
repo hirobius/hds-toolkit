@@ -1,6 +1,8 @@
 # Publishes @hirobius/hds-toolkit to public npm. Run by hand: Actions > publish > Run workflow.
-# First publish uses the NPM_TOKEN secret in the npm-publish environment (main only).
-# After it, set up npm Trusted Publishing for this repo + this file, then delete NPM_TOKEN.
+# Auth: npm Trusted Publishing (OIDC). No npm token. Registered on npmjs.com for
+# org hirobius, repo hds-toolkit, workflow publish.yml, environment npm-publish.
+# Renaming this file breaks publishing until that npm form is updated.
+# Never set NPM_TOKEN or NODE_AUTH_TOKEN here: a static token would replace OIDC.
 name: publish
 
 on:
@@ -24,13 +26,16 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 10
+      # Node 24 ships npm >= 11.5.1, which OIDC publishing needs.
+      # No registry-url: that only wires NODE_AUTH_TOKEN.
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
+      - name: Require npm >= 11.5.1
+        run: |
+          v=$(npm --version)
+          [ "$(printf '%s\n' 11.5.1 "$v" | sort -V | head -n1)" = "11.5.1" ] || { echo "::error::npm $v too old for trusted publishing"; exit 1; }
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
       - name: Publish
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish
