@@ -1,6 +1,6 @@
 {
   "name": "@hirobius/hds-toolkit",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Tooling for the Hirobius Design System: the HDS ESLint plugin, the hds MCP server and the agent docs. The design system itself is @hirobius/design-system.",
   "type": "module",
   "license": "MIT",
