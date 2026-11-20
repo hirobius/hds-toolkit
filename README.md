@@ -22,7 +22,7 @@ hds is the source of truth. This repo only packages files copied from it.
 
 1. `node scripts/sync-from-hds.mjs <hds checkout at the release tag>` copies the plugin, the MCP tools and the agent docs, and records the hds commit in `SYNCED_FROM.json`.
 2. Bump `version`, then run `pnpm test`.
-3. Log in with `npm login`, then run `npm publish`. It publishes to npm with public access. `prepublishOnly` refuses an unsynced tree.
+3. Merge to `main`. On GitHub, open Actions > publish > Run workflow. The workflow runs the tests and publishes to npm with public access. Do not run `npm publish` by hand.
 
 `mcp/hds-mcp.mjs` is owned here and is never overwritten by the sync.
 
