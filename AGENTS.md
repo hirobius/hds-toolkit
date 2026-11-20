@@ -15,7 +15,7 @@ For agents building UI with `@hirobius/design-system`. Read this first. It settl
 
 These are the recommended components: the ratified core set plus every component the needs below name. The ratified core alone is the `core: true` flag in the manifest.
 
-- `@hirobius/design-system`: `Alert`, `AlertDialog`, `Avatar`, `AvatarGroup`, `Badge`, `Blockquote`, `Box`, `Breadcrumb`, `Button`, `Card`, `Checkbox`, `Combobox`, `Container`, `Dialog`, `Disclosure`, `Divider`, `EmptyState`, `Field`, `Grid`, `HdsRouterProvider`, `HdsThemeProvider`, `Icon`, `InlineLink`, `Input`, `Kbd`, `Menu`, `MetaLine`, `MetadataList`, `Pagination`, `Pin`, `Popover`, `Progress`, `Radio`, `SegmentedControl`, `Select`, `Sidebar`, `Skeleton`, `Slider`, `Spinner`, `Stack`, `Surface`, `Switcher`, `Table`, `Tabs`, `TabsContent`, `TabsList`, `TabsTrigger`, `Tag`, `Text`, `Textarea`, `Timestamp`, `ToastProvider`, `Toggle`, `Tooltip`, `VisuallyHidden`, `useToast`.
+- `@hirobius/design-system`: `Alert`, `AlertDialog`, `Avatar`, `AvatarGroup`, `Badge`, `Blockquote`, `Box`, `Breadcrumb`, `Button`, `Card`, `Checkbox`, `Combobox`, `CommandPalette`, `Container`, `Dialog`, `Disclosure`, `Divider`, `Dock`, `EmptyState`, `Field`, `Grid`, `HdsRouterProvider`, `HdsThemeProvider`, `Icon`, `InlineLink`, `Input`, `Kbd`, `List`, `Menu`, `MetaLine`, `MetadataList`, `NavList`, `Pagination`, `Pin`, `Popover`, `Progress`, `Radio`, `SegmentedControl`, `Select`, `Sidebar`, `Skeleton`, `Slider`, `Spinner`, `Stack`, `Surface`, `Switcher`, `Table`, `Tabs`, `TabsContent`, `TabsList`, `TabsTrigger`, `Tag`, `Text`, `Textarea`, `Timeline`, `Timestamp`, `ToastProvider`, `Toggle`, `Tooltip`, `VisuallyHidden`, `useToast`.
 - `@hirobius/design-system/patterns`: `DataTableSection`, `DestructiveSection`, `Form`, `FormActions`, `MetricTile`, `MetricTiles`, `Page`, `PageHeader`. These are not in the root barrel.
 - Load one stylesheet once at the app root and put `data-hds` on the root element (`CONSUMING.md`).
 
@@ -25,18 +25,23 @@ One answer per need. Use the components after the arrow; what follows "Not:" is 
 
 - **Outermost wrapper of a screen** → `Page`, `Stack`. Not: `Container`, `Box`, a bare Stack as the root.
   `<Page><Stack gap="spacious">…one child per section…</Stack></Page>`. `Container` is for a full-bleed surface that is not a page.
+  Import: `import { Page } from '@hirobius/design-system/patterns';` the rest from `@hirobius/design-system`.
 - **Screen title with breadcrumb, status and actions** → `PageHeader`, `Breadcrumb`, `Badge`. Not: Text as the page title, a Stack row of Text and Badge.
   Exactly one per screen: `<PageHeader breadcrumb={<Breadcrumb items={[{ label, href }, { label }]} />} title="…" status={<Badge tone="success">Active</Badge>} />`.
+  Import: `import { PageHeader } from '@hirobius/design-system/patterns';` the rest from `@hirobius/design-system`.
 - **Row of headline numbers (stats, KPIs, counts, totals)** → `MetricTiles`, `MetricTile`. Not: `Stat`, `StatusTile`, `CardMetric`, Card with Text.
   `<MetricTiles><MetricTile label="Open projects" value="5" />…</MetricTiles>`; one MetricTile per number. `Stat` is for a number inside prose or a dense list, `Card.Metric` for one inside an existing `Card`, a `Card` with `Card.Row` for a state with notes (never a number; it replaces the deprecated `StatusTile`).
+  Import: `import { MetricTiles, MetricTile } from '@hirobius/design-system/patterns';`
 - **Table of records with row actions** → `DataTableSection`, `Badge`, `Button`. Not: Table on its own, Card around a Table.
   `<DataTableSection title="Projects" columns={[{ key, label }]} rows={[{ key, cells: [...], actions: <Stack direction="row" gap="tight">…</Stack> }]} />`; leave the actions column out of `columns`.
+  Import: `import { DataTableSection } from '@hirobius/design-system/patterns';` the rest from `@hirobius/design-system`.
 - **Switch between panels of related content** → `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`. Not: `SegmentedControl`, Button rows.
   `<Tabs defaultValue="a"><TabsList><TabsTrigger value="a">A</TabsTrigger></TabsList><TabsContent value="a">…</TabsContent></Tabs>`.
 - **Status label in a header or table cell** → `Badge`. Not: `Tag`, `Text`.
   `<Badge tone="success|info|warning|danger|neutral|inProgress">…</Badge>`; tone is the only styling input.
 - **Form with fields and a submit button** → `Form`, `Textarea`, `Input`, `FormActions`, `Button`. Not: a raw `<form>`, a Stack of Buttons as the footer.
   `<Form onSubmit={…}><Textarea label="Notes" … /><FormActions primary={<Button type="submit">Save note</Button>} /></Form>`; every field takes its own `label`.
+  Import: `import { Form, FormActions } from '@hirobius/design-system/patterns';` the rest from `@hirobius/design-system`.
 - **Confirm a destructive or irreversible action (delete, archive, remove)** → `AlertDialog`, `Button`. Not: `Dialog`, `window.confirm`.
   Trigger, title, description, Cancel and Action parts: `<AlertDialog><AlertDialog.Trigger asChild><Button …>Archive</Button></AlertDialog.Trigger><AlertDialog.Content><AlertDialog.Header><AlertDialog.Title>…</AlertDialog.Title><AlertDialog.Description>…</AlertDialog.Description></AlertDialog.Header><AlertDialog.Footer><AlertDialog.Cancel asChild><Button variant="secondary">Cancel</Button></AlertDialog.Cancel><AlertDialog.Action asChild><Button tone="danger" onClick={…}>Archive</Button></AlertDialog.Action></AlertDialog.Footer></AlertDialog.Content></AlertDialog>`. Focus moves in and returns to the trigger for you.
 - **Brief confirmation after an action (saved, archived, sent)** → `ToastProvider`, `useToast`. Not: `Badge`, `Alert`, `Text`.
@@ -57,6 +62,7 @@ One answer per need. Use the components after the arrow; what follows "Not:" is 
   `DataTableSection` shows its own through `emptyTitle`; use `EmptyState` elsewhere.
 - **The one irreversible action of a screen (delete the client, close the account)** → `DestructiveSection`. Not: a danger Button that acts without a confirm.
   Last on the screen: `<DestructiveSection title="Delete client" description="…" actionLabel="Delete" onConfirm={…} />`; it opens its own AlertDialog. A per-row destructive action uses AlertDialog directly.
+  Import: `import { DestructiveSection } from '@hirobius/design-system/patterns';`
 - **Read-only details as label and value pairs** → `MetadataList`, `Field`. Not: a Table with two columns, Text pairs in a Stack.
   `<MetadataList items={[{ term: "Owner", description: "Ada" }]} />` for a set; `Field` for one pair.
 - **A person, or a group of people** → `Avatar`, `AvatarGroup`. Not: an image in a rounded Box.
@@ -71,6 +77,8 @@ One answer per need. Use the components after the arrow; what follows "Not:" is 
   `Sidebar` (`side`, `sideWidth`) for rail + content; `Switcher` (`threshold`) for a row that flips to a column. Neither needs a media query.
 - **Keep an element stuck while its region scrolls** → `Pin`. Not: position: sticky in style.
   `<Pin top="…">…</Pin>` inside the scrolling region.
+- **Main actions fixed to the bottom of a phone screen** → `Dock`, `Button`. Not: `Pin`, position: fixed in style, a hand-built visualViewport listener.
+  `<Dock><Stack direction="row" gap="tight">…Buttons…</Stack></Dock>`; it steps aside while a text field has focus and sits inline from sm up.
 
 ## Rules
 
@@ -78,6 +86,7 @@ One answer per need. Use the components after the arrow; what follows "Not:" is 
 - No raw `<button>`, `<input>`, `<select>`, `<textarea>` or `<form>`: use `Button`, `Input`, `Select`, `Textarea`, `Form`.
 - Every control has an accessible name: fields take `label`, a repeated row action takes an `aria-label` naming its row.
 - Section headings come from the pattern that owns the section (`title` props). Do not add a `Text` heading the screen does not ask for.
+- The app is type-checked strictly and unannotated code fails the build: give `useState` an explicit type when the value can be `null` (`useState<string | null>(null)`), and annotate handler and callback parameters instead of leaving them implicit `any`.
 
 ## Voice
 
@@ -102,31 +111,32 @@ export default [...hds.configs.recommended];
 
 <!-- hds:repo-notes — everything below is hand-written, for agents working in the hds repo itself; consumers can stop here. -->
 
-Working in this repo: start at `docs/ai/FRONT-DOOR.md` (read order, where live state is, the docs index).
+Working in this repo: start at `docs/ai/FRONT-DOOR.md` (read order, where live state is, the docs index). The rules are in `CLAUDE.md`. Detail is in `docs/agent/README.md`.
 
 ## Ralph quality bar
 
 REPO_TYPE: library
 QUALITY BAR: Public npm package. Backward compatibility matters. Tests required, and a live demo on the docs site (docs-site/components/component-demos.tsx) for a core component or pattern.
 
-Rules for any autonomous loop in this repo:
+Rules for any autonomous loop in this repo (detail: `docs/agent/ralph.md`, full contract: `ralph/README.md`):
 
 - One issue per PR. Small steps. Never push to main.
-- The gate (ralph/gate.sh) must pass before any PR. No exceptions.
+- The gate (ralph/gate.sh) must pass **locally** before any PR. No exceptions.
 - Fight entropy: leave the code better than you found it.
 - No shortcut that creates debt someone else pays for.
-- Merges are HUMAN-approved: `ralph-approved` on the PR, or the issue
-  pre-tagged `ralph-auto` (batch approval). Never merge yourself.
+- Merges are HUMAN-approved: `ralph-approved` on the PR, or the issue pre-tagged `ralph-auto`, plus an independent PASS review comment for the head commit. Never merge yourself.
+- Agents never touch `ralph-*` labels, claim refs, or `ralph/{.lock,runs.jsonl,logs/}`: the harness has those.
+- The loop and `ralph-gate` only run when someone starts them by hand.
 
-Loop mechanics (see `ralph/README.md` for the full contract):
+## Checks, merge and release
 
-- Labels: `ralph-ready` (queue, human) · `p0`–`p3` (priority, human) ·
-  `ralph-auto`/`ralph-approved` (merge approval, human) · `ralph-wip`
-  (claimed, loop) · `ralph-parked`/`needs-adrian` (parked with reason, loop) ·
-  `ralph-selfheal-attempted` (gate's one bounded repair, spent).
-- Selection is deterministic (`ralph/next.sh`: priority label, then issue #);
-  claims are atomic (`refs/heads/ralph/claim-<n>`); the loop's exit codes are
-  a contract (`ralph/run.sh` header). Agents never touch `ralph-*` labels,
-  claim refs, or `ralph/{.lock,runs.jsonl,logs/}` — the harness owns those.
-- The engine is org-level: workflows are thin callers into
-  `hirobius/ralph/.github/workflows/ralph-{run,gate}-reusable.yml@v1`.
+Detail: `docs/agent/checks-and-merge.md`.
+
+- Never wait on GitHub Actions checks, and never treat a missing check as pass or fail. Leave `.github/workflows/` alone.
+- Check locally before push: the husky hooks, plus `pnpm typecheck && pnpm test` (and `pnpm smoke:consumer` for anything that ships). Paste the results into the PR.
+- Merge rule: an independent PASS review comment on the PR, from someone other than the author, naming the head commit. A new push voids it.
+- Release: from GitHub Actions on merge of the Version Packages PR. Agents never `npm publish` by hand. See `docs/RELEASING.md`.
+
+## PR previews
+
+Vercel preview builds are off. Every PR carries screenshots of the affected routes, or says "no visual change". Detail: `docs/agent/pr-previews.md`.
