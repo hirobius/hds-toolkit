@@ -1,17 +1,28 @@
 {
   "name": "@hirobius/hds-toolkit",
-  "version": "0.1.1",
-  "description": "Private tooling for the Hirobius Design System: the HDS ESLint plugin, the hds MCP server and the agent docs. The design system itself stays public as @hirobius/design-system.",
+  "version": "0.2.0",
+  "description": "Tooling for the Hirobius Design System: the HDS ESLint plugin, the hds MCP server and the agent docs. The design system itself is @hirobius/design-system.",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": false,
-  "repository": { "type": "git", "url": "git+https://github.com/hirobius/hds-toolkit.git" },
-  "publishConfig": { "registry": "https://npm.pkg.github.com" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hirobius/hds-toolkit.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
   "exports": {
-    "./eslint-plugin": { "types": "./eslint-plugin/index.d.mts", "default": "./eslint-plugin/index.mjs" },
+    "./eslint-plugin": {
+      "types": "./eslint-plugin/index.d.mts",
+      "default": "./eslint-plugin/index.mjs"
+    },
     "./package.json": "./package.json"
   },
-  "bin": { "hds-mcp": "mcp/hds-mcp.mjs" },
+  "bin": {
+    "hds-mcp": "mcp/hds-mcp.mjs"
+  },
   "files": [
     "eslint-plugin/index.mjs",
     "eslint-plugin/index.d.mts",
@@ -28,9 +39,16 @@
     "@hirobius/design-system": ">=0.24.0",
     "eslint": "^9.0.0 || ^10.0.0"
   },
-  "peerDependenciesMeta": { "eslint": { "optional": true }, "@hirobius/design-system": { "optional": true } },
+  "peerDependenciesMeta": {
+    "eslint": {
+      "optional": true
+    },
+    "@hirobius/design-system": {
+      "optional": true
+    }
+  },
   "devDependencies": {
-    "@hirobius/design-system": "0.26.2",
+    "@hirobius/design-system": "0.46.0",
     "eslint": "^10.3.0",
     "vitest": "^4.1.0"
   },
@@ -39,5 +57,7 @@
     "test": "vitest run",
     "prepublishOnly": "node scripts/check-synced.mjs && vitest run"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

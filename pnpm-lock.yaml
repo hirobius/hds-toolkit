@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@hirobius/design-system':
-        specifier: 0.26.2
-        version: 0.26.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: 0.46.0
+        version: 0.46.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       eslint:
         specifier: ^10.3.0
         version: 10.13.0
@@ -71,20 +71,23 @@ packages:
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
-  '@hirobius/design-system@0.26.2':
-    resolution: {integrity: sha512-Aa9/hyIIxc6kdH358NGHodsgLfevHO2wJe6OcMOFQJMQoxsKlH4ZscI8LTFT4YHVMpEySxRpvIj/5CwLN9Mf8w==}
+  '@hirobius/design-system@0.46.0':
+    resolution: {integrity: sha512-TMBj1J5+lOSECZtDX/kQgI7p98C/nhIkjWHyJN5IN17KMCkXqzrHM+6RUVMumJENHPo68JTG61tqRh8RATpI7w==}
     engines: {node: '>=20', pnpm: '>=8'}
     hasBin: true
     peerDependencies:
       '@hookform/resolvers': ^3.9.0 || ^4.0.0 || ^5.0.0
+      '@number-flow/react': ^0.6.2
       lenis: ^1.3.0
       react: ^18.3.0 || ^19.0.0
       react-dom: ^18.3.0 || ^19.0.0
       react-hook-form: ^7.0.0
-      react-router: ^7.0.0
+      react-router: ^7.18.2
       zod: ^3.23.0 || ^4.0.0
     peerDependenciesMeta:
       '@hookform/resolvers':
+        optional: true
+      '@number-flow/react':
         optional: true
       lenis:
         optional: true
@@ -825,15 +828,12 @@ packages:
   flatted@3.4.4:
     resolution: {integrity: sha512-5+ybhBZANEJxaH3X5evAFatUxLfEHSr7n6kYJ+1Qd0mUqr4eu9gIf6GDbWHf8RJijHrjjO8G+la14SlL2SeS1Q==}
 
-  framer-motion@12.43.0:
-    resolution: {integrity: sha512-1eaL3RvR/kAlbG7UYcpMptEyzPoENO0c6w7ZnB3/hh2vSAz/6uGAFn6fdoqTBguNstf3MsFhJHsD/0DHiclG+g==}
+  framer-motion@14.3.1:
+    resolution: {integrity: sha512-/6kjoSWyGsaUaHGaZehiqyVj0eJlY163TPKQCoTh0gHVr0JLyJE/NwCTqkLbXAnOOM00fLD/d92eh9mZfJaa6w==}
     peerDependencies:
-      '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
     peerDependenciesMeta:
-      '@emotion/is-prop-valid':
-        optional: true
       react:
         optional: true
       react-dom:
@@ -980,21 +980,18 @@ packages:
     resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
     engines: {node: 18 || 20 || >=22}
 
-  motion-dom@12.43.0:
-    resolution: {integrity: sha512-azKON4d9S65PEoFUiQTMTgPheEmzf2QngdRc50AKfJp9Q9mmcBVw22c8eMq9k8kxOFHdL7+WZY7N/5F/lwiDag==}
+  motion-dom@14.3.1:
+    resolution: {integrity: sha512-6gsjOAjXgZPoLLHNiBI1uBVNhSrIXSm6YBU8RsFM//byOvIys8YHPQE3VZqW3rWR021tcd3eT8pmV8zWTY9Jsg==}
 
-  motion-utils@12.39.0:
-    resolution: {integrity: sha512-8nadJAJjTtqRkmRF36FoJTrywK9nnFmnPwnSMyxaOCU7GDjN9RTMJIxx9De8ErM+vpPhMccr/6fo5WciyQLnMQ==}
+  motion-utils@14.1.1:
+    resolution: {integrity: sha512-3VvN5Uvf8B6qG+OfOui6Nht5EWp+vLuU3IqcAj7ItZGKqtmTjCebl5sGZF7/08gEHRnEl1AP/fIwbcEyVrcQGQ==}
 
-  motion@12.23.24:
-    resolution: {integrity: sha512-Rc5E7oe2YZ72N//S3QXGzbnXgqNrTESv8KKxABR20q2FLch9gHLo0JLyYo2hZ238bZ9Gx6cWhj9VO0IgwbMjCw==}
+  motion@14.3.1:
+    resolution: {integrity: sha512-u28lvaeSKrtfLGhofGjv6Bjs26FOgZS6XWXB4Lz8JdL1qj68sflITbsBGOFzqcoEI4OKG+npEau/1evgPNv7Eg==}
     peerDependencies:
-      '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
     peerDependenciesMeta:
-      '@emotion/is-prop-valid':
-        optional: true
       react:
         optional: true
       react-dom:
@@ -1340,7 +1337,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@hirobius/design-system@0.26.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@hirobius/design-system@0.46.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       '@radix-ui/react-alert-dialog': 1.2.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@radix-ui/react-dialog': 1.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -1355,12 +1352,11 @@ snapshots:
       class-variance-authority: 0.7.1
       clsx: 2.1.1
       lucide-react: 0.487.0(react@19.3.1)
-      motion: 12.23.24(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      motion: 14.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
       tailwind-merge: 3.7.0
     transitivePeerDependencies:
-      - '@emotion/is-prop-valid'
       - '@types/react'
       - '@types/react-dom'
 
@@ -1993,10 +1989,10 @@ snapshots:
 
   flatted@3.4.4: {}
 
-  framer-motion@12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  framer-motion@14.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
-      motion-dom: 12.43.0
-      motion-utils: 12.39.0
+      motion-dom: 14.3.1
+      motion-utils: 14.1.1
       tslib: 2.8.1
     optionalDependencies:
       react: 19.3.1
@@ -2109,15 +2105,15 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.12
 
-  motion-dom@12.43.0:
+  motion-dom@14.3.1:
     dependencies:
-      motion-utils: 12.39.0
+      motion-utils: 14.1.1
 
-  motion-utils@12.39.0: {}
+  motion-utils@14.1.1: {}
 
-  motion@12.23.24(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  motion@14.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
-      framer-motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      framer-motion: 14.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       tslib: 2.8.1
     optionalDependencies:
       react: 19.3.1
